@@ -66,7 +66,7 @@ namespace Ghost.Extensions.Extensions
 
         private static Exception GetClearExceptionfromAggregatedException(AggregateException exception)
         {
-            if (exception.InnerExceptions.NullOrEmpty() || exception.InnerExceptions.Count > 1)
+            if (exception.InnerExceptions.IsNullOrEmpty() || exception.InnerExceptions.Count > 1)
             {
                 return exception;
             }

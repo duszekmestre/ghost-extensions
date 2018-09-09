@@ -7,30 +7,11 @@
     using System.Linq;
     using System.Reflection;
     using System.Resources;
-    using System.Runtime.Serialization;
     using System.Threading;
     using Attributes;
 
     public static class EnumUtilities
     {
-        public struct EnumTranslation
-        {
-            public Enum Enum { get; set; }
-
-            public string LanguageCode { get; set; }
-
-            public EnumTranslation(Enum e, string langCode)
-            {
-                this.Enum = e;
-                this.LanguageCode = langCode;
-            }
-
-            public override string ToString()
-            {
-                return $"{this.Enum}/{this.LanguageCode}";
-            }
-        }
-
         #region Public Methods and Operators
 
         public static string ToUserString(this Enum enumeration)
@@ -146,9 +127,8 @@
 
         public static T ParseEnum<T>(this string text)
             where T : struct
-        {
-            T e;
-            return Enum.TryParse(text, true, out e) ? e : default(T);
+        {            
+            return Enum.TryParse(text, true, out T e) ? e : default(T);
         }
 
         #endregion Public Methods and Operators

@@ -2,24 +2,66 @@
 {
     public static class NumericExtensions
     {
-        public static bool Between(this int value, int min, int max)
+        public static bool IsBetween(this int value, int min, int max)
         {
             return value > min && value < max;
         }
 
-        public static bool BetweenOrEqual(this int value, int min, int max)
+        public static bool IsBetweenOrEqual(this int value, int min, int max)
         {
             return value >= min && value <= max;
         }
 
-        public static bool Between(this decimal value, decimal min, decimal max)
+        public static bool ISBetween(this decimal value, decimal min, decimal max)
         {
             return value > min && value < max;
         }
 
-        public static bool BetweenOrEqual(this decimal value, decimal min, decimal max)
+        public static bool IsBetweenOrEqual(this decimal value, decimal min, decimal max)
         {
             return value >= min && value <= max;
+        }
+
+        public static bool ISBetween(this double value, double min, double max)
+        {
+            return value > min && value < max;
+        }
+
+        public static bool IsBetweenOrEqual(this double value, double min, double max)
+        {
+            return value >= min && value <= max;
+        }
+
+        public static bool IsBetween(this long value, long min, long max)
+        {
+            return value > min && value < max;
+        }
+
+        public static bool IsBetweenOrEqual(this long value, long min, long max)
+        {
+            return value >= min && value <= max;
+        }
+
+        public static bool IsBetween(this float value, float min, float max)
+        {
+            return value > min && value < max;
+        }
+
+        public static bool IsBetweenOrEqual(this float value, float min, float max)
+        {
+            return value >= min && value <= max;
+        }
+
+        public static long AsLong(this decimal value)
+        {
+            try
+            {
+                return (long)value;
+            }
+            catch
+            {
+                return default(long);
+            }
         }
 
         public static long AsLong(this double value)
@@ -34,7 +76,7 @@
             }
         }
 
-        public static int AsInt(this double value)
+        public static int AsInt(this decimal value)
         {
             try
             {
@@ -46,7 +88,7 @@
             }
         }
 
-        public static int AsInt(this decimal value)
+        public static int AsInt(this double value)
         {
             try
             {
@@ -68,64 +110,39 @@
             return decimal.ToDouble(value);
         }
 
+        public static decimal AsDecimal(this int value)
+        {
+            return (decimal)value;
+        }
+
         public static decimal AsDecimal(this double value)
         {
             return (decimal)value;
         }
 
-        public static bool Between(this double value, double min, double max)
+        public static bool IsEqualWithMargin(this int value, int compareValue, int margin)
         {
-            return value > min && value < max;
+            return value.IsBetweenOrEqual(compareValue * (1 - margin), compareValue * (1 + margin));
         }
 
-        public static bool BetweenOrEqual(this double value, double min, double max)
+        public static bool IsEqualWithMargin(this decimal value, decimal compareValue, decimal margin)
         {
-            return value >= min && value <= max;
+            return value.IsBetweenOrEqual(compareValue * (1 - margin), compareValue * (1 + margin));
         }
 
-        public static bool Between(this long value, long min, long max)
+        public static bool IsEqualWithMargin(this double value, double compareValue, double margin)
         {
-            return value > min && value < max;
+            return value.IsBetweenOrEqual(compareValue * (1 - margin), compareValue * (1 + margin));
         }
 
-        public static bool BetweenOrEqual(this long value, long min, long max)
+        public static bool IsEqualWithMargin(this float value, float compareValue, float margin)
         {
-            return value >= min && value <= max;
+            return value.IsBetweenOrEqual(compareValue * (1 - margin), compareValue * (1 + margin));
         }
 
-        public static bool Between(this float value, float min, float max)
+        public static bool IsEqualWithMargin(this long value, long compareValue, long margin)
         {
-            return value > min && value < max;
-        }
-
-        public static bool BetweenOrEqual(this float value, float min, float max)
-        {
-            return value >= min && value <= max;
-        }
-
-        public static bool EqualWithMargin(this int value, int compareValue, int margin)
-        {
-            return value.BetweenOrEqual(compareValue * (1 - margin), compareValue * (1 + margin));
-        }
-
-        public static bool EqualWithMargin(this decimal value, decimal compareValue, decimal margin)
-        {
-            return value.BetweenOrEqual(compareValue * (1 - margin), compareValue * (1 + margin));
-        }
-
-        public static bool EqualWithMargin(this double value, double compareValue, double margin)
-        {
-            return value.BetweenOrEqual(compareValue * (1 - margin), compareValue * (1 + margin));
-        }
-
-        public static bool EqualWithMargin(this float value, float compareValue, float margin)
-        {
-            return value.BetweenOrEqual(compareValue * (1 - margin), compareValue * (1 + margin));
-        }
-
-        public static bool EqualWithMargin(this long value, long compareValue, long margin)
-        {
-            return value.BetweenOrEqual(compareValue * (1 - margin), compareValue * (1 + margin));
+            return value.IsBetweenOrEqual(compareValue * (1 - margin), compareValue * (1 + margin));
         }
     }
 }

@@ -12,37 +12,6 @@ namespace Ghost.Extensions.Extensions
 {
     public static class StringExtensions
     {
-        public static string SHA1(this string plainText)
-        {
-            using (var sha = System.Security.Cryptography.SHA1.Create())
-            {
-                var hash = sha.ComputeHash(Encoding.Default.GetBytes(plainText));
-                return Encoding.Default.GetString(hash);
-            }
-        }
-
-        public static string SHA1<T>(this string plainText)
-            where T : Encoding, new()
-        {
-            var encoding = new T();
-            using (var sha = System.Security.Cryptography.SHA1.Create())
-            {
-                var hash = sha.ComputeHash(encoding.GetBytes(plainText));
-                return encoding.GetString(hash);
-            }
-        }
-
-        public static string SHA1Base64(this string plainText)
-        {
-            var data = Encoding.UTF8.GetBytes(plainText);
-            using (var sha1 = System.Security.Cryptography.SHA1.Create())
-            {
-                data = sha1.ComputeHash(data);
-            }
-
-            return Convert.ToBase64String(data);
-        }
-
         public static string Base64Encode(this string plainText)
         {
             var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
@@ -53,38 +22,7 @@ namespace Ghost.Extensions.Extensions
         {
             var base64EncodedBytes = Convert.FromBase64String(base64EncodedData);
             return Encoding.UTF8.GetString(base64EncodedBytes);
-        }
-
-        private static ConcurrentDictionary<string, string> currencySymbolDict = new ConcurrentDictionary<string, string>();
-
-        public static string ToCurrencySymbol(this string isoCode)
-        {
-            if (string.IsNullOrWhiteSpace(isoCode))
-            {
-                return string.Empty;
-            }
-
-
-            if (currencySymbolDict.TryGetValue(isoCode, out string currencySymbol) == false)
-            {
-                var culture = CultureInfo.GetCultures(CultureTypes.SpecificCultures).Select(x =>
-                {
-                    try
-                    {
-                        return new RegionInfo(x.Name);
-                    }
-                    catch
-                    {
-                        return null;
-                    }
-                }).FirstOrDefault(x => x != null && x.ISOCurrencySymbol == isoCode);
-
-                currencySymbol = culture != null ? culture.CurrencySymbol : isoCode;
-                currencySymbolDict.TryAdd(isoCode, currencySymbol);
-            }
-
-            return currencySymbol;
-        }
+        }        
 
         public static string SkipString(this string input, int skip)
         {
@@ -116,14 +54,9 @@ namespace Ghost.Extensions.Extensions
             return input.Replace(phrase, string.Empty);
         }
 
-        public static string RemoveMultipleWhitespaces(this string input, params char[] whitespaces)
+        public static string RemoveMultipleWhitespaces(this string input)
         {
             var spaceArray = new[] {' '};
-            if (whitespaces.Any())
-            {
-                spaceArray = whitespaces;
-            }
-
             return string.Join(" ", input.Split(spaceArray, StringSplitOptions.RemoveEmptyEntries)).Trim();
         }
 
@@ -149,41 +82,21 @@ namespace Ghost.Extensions.Extensions
 
         public static DateTime AsDateTime(this string input, string format)
         {
-            if (DateTime.TryParseExact(input, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime date))
-            {
-                return date;
-            }
-
-            return default(DateTime);
+            return DateTime.TryParseExact(input, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime date) ? date : default(DateTime);
         }
 
         public static DateTime? AsDateTimeNullable(this string input, string format)
         {
-            if (DateTime.TryParseExact(input, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime date))
-            {
-                return date;
-            }
-
-            return null;
+            return DateTime.TryParseExact(input, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime date) ? date.AsNullable() : null;
         }
 
         public static TimeSpan AsTimeSpan(this string input, string format = "c")
         {
-            if (TimeSpan.TryParseExact(input, format, CultureInfo.InvariantCulture, out TimeSpan timespan))
-            {
-                return timespan;
-            }
-
-            return default(TimeSpan);
+            return TimeSpan.TryParseExact(input, format, CultureInfo.InvariantCulture, out TimeSpan timespan) ? timespan : default(TimeSpan);
         }
 
         public static decimal AsDecimal(this string input, decimal defaultValue = decimal.Zero)
         {
-            if (string.IsNullOrWhiteSpace(input))
-            {
-                return 0;
-            }
-
             return decimal.TryParse(input, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal output) ? output : defaultValue;
         }
 
@@ -197,12 +110,12 @@ namespace Ghost.Extensions.Extensions
             return string.IsNullOrWhiteSpace(input);
         }
 
-        public static bool NotNullOrWhiteSpace(this string input)
+        public static bool IsNotNullOrWhiteSpace(this string input)
         {
             return !string.IsNullOrWhiteSpace(input);
         }
 
-        public static bool NotNullOrEmpty(this string input)
+        public static bool IsNotNullOrEmpty(this string input)
         {
             return !string.IsNullOrWhiteSpace(input);
         }
@@ -232,21 +145,6 @@ namespace Ghost.Extensions.Extensions
                      .Replace("$", "&#36;")
                      .Replace("¥", "&#165;")
                      .Replace("£", "&#163;").ToString();
-        }
-
-        public static string Join<T>(this IEnumerable<T> input, string separator)
-        {
-            return string.Join(separator, input);
-        }
-
-        public static string UseFormat(this string parameter, string format)
-        {
-            return string.Format(format, parameter);
-        }
-
-        public static string With(this string format, params object[] args)
-        {
-            return string.Format(format, args);
         }
 
         public static string Surround(this string parameter, string left, string right)
@@ -341,7 +239,7 @@ namespace Ghost.Extensions.Extensions
 
         public static bool IsBase64String(this string input)
         {
-            return input.NotNullOrWhiteSpace() && (input.Trim().Length % 4 == 0) && Regex.IsMatch(input.Trim(), @"^[a-zA-Z0-9\+/]*={0,3}$", RegexOptions.None);
+            return input.IsNotNullOrWhiteSpace() && (input.Trim().Length % 4 == 0) && Regex.IsMatch(input.Trim(), @"^[a-zA-Z0-9\+/]*={0,3}$", RegexOptions.None);
         }
 
         public static string RemoveAllWhiteSpaces(this string input)
@@ -353,8 +251,11 @@ namespace Ghost.Extensions.Extensions
                 {
                     char c = input[i];
                     if (!char.IsWhiteSpace(c))
+                    {
                         sb.Append(c);
+                    }
                 }
+
                 return sb.ToString();
             }
             else

@@ -13,15 +13,20 @@ namespace Ghost.Extensions.Extensions
 
         public static TSource Random<TSource>(this IEnumerable<TSource> source)
         {
+            return source.RandomOrDefault(default(TSource));
+        }
+
+        public static TSource RandomOrDefault<TSource>(this IEnumerable<TSource> source, TSource defaultValue =  default(TSource))
+        {
             if (source == null)
             {
-                return default(TSource);
+                return defaultValue;
             }
 
             var coll = source.ToList();
             if (!coll.Any())
             {
-                return default(TSource);
+                return defaultValue;
             }
 
             var count = coll.Count;
@@ -44,14 +49,14 @@ namespace Ghost.Extensions.Extensions
             return defaultValue;
         }
 
-        public static bool NullOrEmpty<TSource>(this IEnumerable<TSource> source)
+        public static bool IsNullOrEmpty<TSource>(this IEnumerable<TSource> source)
         {
             return source == null || !source.Any();
         }
 
         public static bool AnyAndAll<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
         {
-            return !source.NullOrEmpty() && source.All(predicate);
+            return !source.IsNullOrEmpty() && source.All(predicate);
         }
 
         /// <summary>
@@ -154,7 +159,7 @@ namespace Ghost.Extensions.Extensions
 
         public static void ForEach<T>(this IEnumerable<T> collection, Action<T> action)
         {
-            if (collection == null)
+            if (collection.IsNullOrEmpty())
             {
                 return;
             }
@@ -167,7 +172,7 @@ namespace Ghost.Extensions.Extensions
 
         public static void ForEach<T>(this IEnumerable<T> collection, Action<T, int> action)
         {
-            if (collection == null)
+            if (collection.IsNullOrEmpty())
             {
                 return;
             }
@@ -179,51 +184,12 @@ namespace Ghost.Extensions.Extensions
             }).ToList();
         }
 
-        public static bool IsEmpty<T>(this IEnumerable<T> collection)
-        {
-            return collection == null || !collection.Any();
-        }
-
-        public static bool HasElements<T>(this IEnumerable<T> collection)
+        public static bool HasAnyElement<T>(this IEnumerable<T> collection)
         {
             return collection != null && collection.Any();
         }
 
-        public static T GetValueOrDefault<T>(this Hashtable hashtable, object key, T defaultValue = default(T))
-            where T : class
-        {
-            if (!hashtable.ContainsKey(key))
-            {
-                return defaultValue;
-            }
 
-            try
-            {
-                return (T)hashtable[key];
-            }
-            catch (Exception)
-            {
-                return defaultValue;
-            }
-        }
-
-        public static TValue GetValueOrDefault<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue = default(TValue))
-            where TValue : class
-        {
-            if (!dictionary.ContainsKey(key))
-            {
-                return defaultValue;
-            }
-
-            try
-            {
-                return dictionary[key];
-            }
-            catch (Exception)
-            {
-                return defaultValue;
-            }
-        }
 
         public static IEnumerable<T> Concat<T>(this IEnumerable<T> collection, T item)
 		{
@@ -248,9 +214,7 @@ namespace Ghost.Extensions.Extensions
 
             foreach (TSource element in source)
             {
-                flattenedList = flattenedList.Concat(
-                    getChildrenFunction(element).Flatten(getChildrenFunction)
-                );
+                flattenedList = flattenedList.Concat(getChildrenFunction(element).Flatten(getChildrenFunction));
             }
 
             return flattenedList;
@@ -259,6 +223,11 @@ namespace Ghost.Extensions.Extensions
         public static IEnumerable<TSource> WhereIf<TSource>(this IEnumerable<TSource> source, bool condition, Func<TSource, bool> predicate)
         {
             return condition ? source.Where(predicate) : source;
+        }
+
+        public static string Join<T>(this IEnumerable<T> input, string separator)
+        {
+            return string.Join(separator, input);
         }
     }
 }

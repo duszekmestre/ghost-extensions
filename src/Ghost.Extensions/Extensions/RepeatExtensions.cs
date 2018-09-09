@@ -3,9 +3,10 @@ using System.Threading.Tasks;
 
 namespace Ghost.Extensions.Extensions
 {
-    public static class ActionExtensions
+    public static class RepeatExtensions
     {
-        public static TOutput Repeat<TOutput>(this Func<TOutput> action,
+        public static TOutput Repeat<TOutput>(
+            this Func<TOutput> action,
             int attempts,
             Action postLoopAction = null,
             bool throwLastException = false,

@@ -34,12 +34,12 @@ namespace Ghost.Extensions.Helpers
 
         public static T FromJson<T>(this string json, bool ignoreSerializationErrors = false)
         {
-            return json.NotNullOrWhiteSpace() ? JsonConvert.DeserializeObject<T>(json, CreateSerializerSettings(ignoreSerializationErrors)) : default(T);
+            return json.IsNotNullOrWhiteSpace() ? JsonConvert.DeserializeObject<T>(json, CreateSerializerSettings(ignoreSerializationErrors)) : default(T);
         }
 
         public static object FromJson(this string json, Type typeOfValue, bool ignoreSerializationErrors = false)
         {
-            return json.NotNullOrWhiteSpace() ? JsonConvert.DeserializeObject(json, typeOfValue, CreateSerializerSettings(ignoreSerializationErrors)) : null;
+            return json.IsNotNullOrWhiteSpace() ? JsonConvert.DeserializeObject(json, typeOfValue, CreateSerializerSettings(ignoreSerializationErrors)) : null;
         }
 
         public static string ToJson<T>(this T obj, bool applySerializationSettings = false)

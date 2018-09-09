@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -24,13 +25,13 @@ namespace Ghost.Extensions.Extensions
             return source?.ContainsKey(key) == true ? source[key] : defaultValue;
         }
 
-        public static T GetOrDefault<T>(this NameValueCollection configurationManager, string keyName, T defaultValue = default(T))
+        public static T GetOrDefault<T>(this NameValueCollection nameValueCollection, string keyName, T defaultValue = default(T))
         {
-            if (configurationManager.AllKeys.Contains(keyName))
+            if (nameValueCollection.AllKeys.Contains(keyName))
             {
                 try
                 {
-                    return (T)Convert.ChangeType(configurationManager[keyName], typeof(T));
+                    return (T)Convert.ChangeType(nameValueCollection[keyName], typeof(T));
                 }
                 catch
                 {
@@ -38,6 +39,24 @@ namespace Ghost.Extensions.Extensions
             }
 
             return defaultValue;
+        }
+
+        public static T GetValueOrDefault<T>(this Hashtable hashtable, object key, T defaultValue = default(T))
+            where T : class
+        {
+            if (!hashtable.ContainsKey(key))
+            {
+                return defaultValue;
+            }
+
+            try
+            {
+                return (T)hashtable[key];
+            }
+            catch (Exception)
+            {
+                return defaultValue;
+            }
         }
     }
 }

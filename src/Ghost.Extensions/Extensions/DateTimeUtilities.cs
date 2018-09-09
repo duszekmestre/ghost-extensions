@@ -35,7 +35,7 @@ namespace Ghost.Extensions.Extensions
 
         public static DateTimeOffset? RoundDateToMinutes(this DateTimeOffset? date)
         {
-            return date.HasValue ? RoundDateToMinutes(date.Value).Nullable() : null;
+            return date.HasValue ? RoundDateToMinutes(date.Value).AsNullable() : null;
         }
 
         public static long Timestamp(this DateTime date)
@@ -80,7 +80,7 @@ namespace Ghost.Extensions.Extensions
 
         public static DateTime? ConvertTimeZones(this DateTime? date, TimeZoneInfo source, TimeZoneInfo target)
         {
-            return date.HasValue ? TimeZoneInfo.ConvertTime(date.Value, source, target).Nullable() : null;
+            return date.HasValue ? TimeZoneInfo.ConvertTime(date.Value, source, target).AsNullable() : null;
         }
 
         public static DateTimeOffset ToAnotherTimeZone(this DateTimeOffset date, TimeZoneInfo target)
@@ -90,7 +90,7 @@ namespace Ghost.Extensions.Extensions
 
         public static DateTimeOffset? ConvertTimeZones(this DateTimeOffset? date, TimeZoneInfo target)
         {
-            return date.HasValue ? date.Value.ToAnotherTimeZone(target).Nullable() : null;
+            return date.HasValue ? date.Value.ToAnotherTimeZone(target).AsNullable() : null;
         }
 
         public static bool Between(this DateTime date, DateTime minValue, DateTime maxValue)
